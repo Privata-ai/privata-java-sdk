@@ -26,7 +26,6 @@ To record a auditable transaction, you first initiate Blockbird:
 
 ``` java
 // add Blockbird Audit
-Properties props  = Context.getRuntimeProperties();
 bbAudit = new BlockbirdAudit("URL-of-API","appId", "dbId", "username", "password");
 ```
 
