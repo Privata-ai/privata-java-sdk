@@ -22,27 +22,12 @@ Import to Maven using the following in your `pom.xml`:
 
 ## Usage
 
-To use blockbird.data, you must update you `openmrs-runtime.properties` file and add the following parameters:
-```
-blockbird.username=<Your blockbird.data username>
-blockbird.password=<Your blockbird.data password>
-blockbird.url=<The URL of blockbird.data's API>
-blockbird.appId=<The ID of your Application - from the blockbird.data dashboard>
-blockbird.dbId=<The ID of your Database - from the blockbird.data dashboard>
-
-```
-
 To record a auditable transaction, you first initiate Blockbird:
 
 ``` java
-		// add Blockbird Audit
-		Properties props  = Context.getRuntimeProperties();
-		bbAudit = new BlockbirdAudit(
-			props.getProperty("blockbird.url"), 
-			props.getProperty("blockbird.appId"), 
-			props.getProperty("blockbird.dbId"), 
-			props.getProperty("blockbird.username"), 
-			props.getProperty("blockbird.password"));
+// add Blockbird Audit
+Properties props  = Context.getRuntimeProperties();
+bbAudit = new BlockbirdAudit("URL-of-API","appId", "dbId", "username", "password");
 ```
 
 Then you add queries to your packet:
