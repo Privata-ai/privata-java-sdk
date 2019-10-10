@@ -26,7 +26,7 @@ To record a auditable transaction, you first initiate Blockbird:
 
 ``` java
 // add Blockbird Audit
-bbAudit = new BlockbirdAudit("URL-of-API","appId", "dbId", "username", "password");
+bbAudit = BlockbirdAudit.getInstance("URL-of-API","appId", "dbId", "username", "password");
 ```
 
 Then you add queries to your packet:
@@ -35,7 +35,3 @@ bbAudit.addQuery(clientUserId, clientRole, clientTable, clientRole, action("Crea
 
 ```
 
-When you want to send to the API, you run:
-``` java
-bbAudit.run();
-```
