@@ -82,3 +82,4 @@ nb-configuration.xml
 !.editorconfig
 
 log4j.properties
+src/main/resources/test.properties

@@ -23,7 +23,7 @@ public class FireBaseAuth {
     private static FireBaseAuth instance = null;
 
     protected FireBaseAuth() {
-        PropsUtil util = new PropsUtil();
+        PropsUtil util = new PropsUtil("/project.properties");
         this.firebaseKey = util.getProps("firebaseApiKey");       
     }
 

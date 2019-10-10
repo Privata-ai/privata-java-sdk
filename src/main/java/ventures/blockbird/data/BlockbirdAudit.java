@@ -25,10 +25,13 @@ public class BlockbirdAudit extends Thread {
         private String appId;
         private String dbId;
         private String userToken = null;
+        private static int maxQueryQueueLenght = 10;
 
 
 
         final static Logger logger = Logger.getLogger(BlockbirdAudit.class);
+
+        private static BlockbirdAudit instance = null;
 
 	/**
 	 * This is a class to handle the Blockbird Logs and send to the API
@@ -41,7 +44,7 @@ public class BlockbirdAudit extends Thread {
 	 */
 
 
-        public BlockbirdAudit(String apiUrl, String appId, String dbId, String username, String password) {
+        protected BlockbirdAudit(String apiUrl, String appId, String dbId, String username, String password) {
                 this.auditQuery = new AuditJsonObj();
                 this.apiUrl= apiUrl;            
                 this.appId = appId;             
@@ -52,7 +55,27 @@ public class BlockbirdAudit extends Thread {
                 } catch (Exception e) {
                         logger.error("Could not authenticate user "+username+" with error: "+e);
                 }
-        }    
+        } 
+
+
+	/**
+	 * This method will return an instance of the BlockbirdAudit class. If it already
+         * exists, it will not create a new instance
+	 * 
+	 * @param apiUrl the URL of the API
+         * @param appId the ID of the app on blockbird.data
+         * @param dbId the ID of the db on blockbird.data
+         * @param username a valid username on blockbird data
+         * @param password a valid password for the username on blockbird data
+	 */
+        
+        public static BlockbirdAudit getInstance(String apiUrl, String appId, String dbId, String username, String password) {
+                if (instance == null ) {
+                        instance = new BlockbirdAudit(apiUrl, appId, dbId, username, password);
+                }
+                return instance;
+        }
+
 	/**
 	 * This method appends a query to the JSON object
 	 * 
@@ -67,16 +90,30 @@ public class BlockbirdAudit extends Thread {
         public void addQuery(String user, String group, String table, String[] columns, String action,
                         Date date, int row_count) {
                 auditQuery.appendQuery(user, group, table, columns, action, date, row_count);
+                // if auditQuery has reached maxQueryQueueLengith, then send to API
+                if (auditQuery.getQueryCount() > this.maxQueryQueueLenght) {
+                        run();
+                }
                 return;
 
         }
+        /**
+         * This method returns the number of queries in the JSON Object
+         */
+        public int getQueryCount() {
+                if (auditQuery == null) {
+                        return 0;
+                } 
+                return auditQuery.getQueryCount();
+        }
+
         /**
 	 * This method sends the JSON object to the API
 	 * 
 	 */
         @Override
         public void run() {
-                if (auditQuery != null) {
+                if (auditQuery.getQueryCount() > 0) {
 
                 try {
                         URL url = new URL(apiUrl+"/applications/"+appId+"/databases/"+dbId+"/queries");
@@ -100,13 +137,13 @@ public class BlockbirdAudit extends Thread {
                         BufferedReader in = new BufferedReader(
                                 new InputStreamReader(con.getInputStream()));
                         String inputLine;
-                        StringBuffer response = new StringBuffer();
-
-                        logger.warn(con.getResponseCode());
-        
+                        StringBuffer response = new StringBuffer();                
+                        
+                        logger.info("API response: "+con.getResponseCode());
                         while ((inputLine = in.readLine()) != null) {
                                 response.append(inputLine);
                         }
+                        auditQuery.clear(); // if everything went smoothly, then empty the query backlog
                         in.close();
                                                                     
                 } catch (IOException e) {
@@ -118,5 +155,17 @@ public class BlockbirdAudit extends Thread {
                 }
         }
 
+        }
+        /**
+         * There is a chance that the object is destroyed with unsent queries to the API.
+         * 
+         * This method overides the method for when an object is destroyed and uses the run()
+         * method to send the last queries
+         * 
+         */
+        @Override 
+        protected void finalize() throws Throwable {
+                run();
+                super.finalize();
         }
 }

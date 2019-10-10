@@ -13,8 +13,10 @@ import org.json.simple.JSONObject;
 public class AuditJsonObj {
 
        private JSONArray queryArray;
+       private int queryCount;
 
        public AuditJsonObj() {
+              this.queryCount = 0;
               this.queryArray = new JSONArray();
        }
 
@@ -22,6 +24,7 @@ public class AuditJsonObj {
                      Date date, int row_count) {           
               Map<String, Object> queries = createJsonQueries(user, group, table, columns, action, date, row_count);
               this.queryArray.add(queries);
+              this.queryCount++;
               return ;
 
        }
@@ -31,6 +34,17 @@ public class AuditJsonObj {
               payload.put("queries", queryArray);
               return payload;
        }
+
+       public void clear() {
+              this.queryArray.clear();
+              this.queryCount = 0;
+              return;
+       }
+
+       public int getQueryCount() {
+              return queryCount;
+       }
+
 
        public Map<String, Object> createJsonQueries(String user, String group, String table, String[] columns, String action,
                      Date date, int row_count) {

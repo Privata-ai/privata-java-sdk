@@ -19,20 +19,25 @@ public class PropsUtil {
 	
 	final static Logger logger = Logger.getLogger(PropsUtil.class);
 
-    private Properties props = null;
-
-    public PropsUtil() {
+	private Properties props = null;
+	
+	/**
+	 * PropsUtil can read a properties file
+	 * @param propsName is the name of the file. It is located in the src/main/resources folder
+	 * 
+	 **/
+    public PropsUtil(String propsName) {
 		try {
-			InputStream propertyStream = getClass().getResourceAsStream("/project.properties");
+			InputStream propertyStream = getClass().getResourceAsStream(propsName);
 
 			if (propertyStream == null) {
-				throw new IOException("Could not find a blockbird properties file named " );
+				throw new IOException("Could not find a blockbird properties file named " + propsName);
 			}
 			
 			this.props = new Properties();
 			loadProperties(props, propertyStream);
 			propertyStream.close();
-			logger.info("Using runtime properties file: props.property " + props.getProperty("firebaseApiKey"));
+			logger.info("Using runtime properties file:" + propsName);
 			props.getProperty("firebaseApiKey");
 		}
 		catch (Exception ex) {

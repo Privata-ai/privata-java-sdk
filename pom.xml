@@ -45,10 +45,9 @@
         <directory>src/main/resources</directory>
         <includes>
           <include>project.properties</include>
+          <include>log4j.properties</include>
+          <include>test.properties</include>
         </includes>
-        <excludes>
-          <exclude>log4j.properties</exclude>
-        </excludes>
       </resource>
     </resources>
   </build>
