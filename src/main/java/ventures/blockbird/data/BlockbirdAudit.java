@@ -7,10 +7,12 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Date;
+
 import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 
 import ventures.blockbird.auth.FireBaseAuth;
+
 
 /**
  * blockbird.data audit SDK
@@ -24,9 +26,8 @@ public class BlockbirdAudit extends Thread {
         private String apiUrl;
         private String appId;
         private String dbId;
-        private String userToken = null;
         private static int maxQueryQueueLenght = 10;
-
+        private FireBaseAuth firebaseAuth;
 
 
         final static Logger logger = Logger.getLogger(BlockbirdAudit.class);
@@ -46,12 +47,12 @@ public class BlockbirdAudit extends Thread {
 
         protected BlockbirdAudit(String apiUrl, String appId, String dbId, String username, String password) {
                 this.auditQuery = new AuditJsonObj();
+                this.firebaseAuth = FireBaseAuth.getInstance();
                 this.apiUrl= apiUrl;            
                 this.appId = appId;             
                 this.dbId = dbId;   
-                FireBaseAuth firebaseAuth = FireBaseAuth.getInstance();
                 try {
-                        userToken = firebaseAuth.auth(username, password);
+                        this.firebaseAuth.auth(username, password);
                 } catch (Exception e) {
                         logger.error("Could not authenticate user "+username+" with error: "+e);
                 }
@@ -91,7 +92,7 @@ public class BlockbirdAudit extends Thread {
                         Date date, int row_count) {
                 auditQuery.appendQuery(user, group, table, columns, action, date, row_count);
                 // if auditQuery has reached maxQueryQueueLengith, then send to API
-                if (auditQuery.getQueryCount() > this.maxQueryQueueLenght) {
+                if (auditQuery.getQueryCount() > maxQueryQueueLenght) {
                         run();
                 }
                 return;
@@ -99,6 +100,8 @@ public class BlockbirdAudit extends Thread {
         }
         /**
          * This method returns the number of queries in the JSON Object
+         * 
+         * @return the number of queries left in the queue
          */
         public int getQueryCount() {
                 if (auditQuery == null) {
@@ -109,6 +112,7 @@ public class BlockbirdAudit extends Thread {
 
         /**
 	 * This method sends the JSON object to the API
+         * 
 	 * 
 	 */
         @Override
@@ -119,10 +123,12 @@ public class BlockbirdAudit extends Thread {
                         URL url = new URL(apiUrl+"/applications/"+appId+"/databases/"+dbId+"/queries");
                         HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
+                        String userIdToken = firebaseAuth.getIdToken();
+
                         con.setRequestMethod("POST");
 
                         con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-                        con.setRequestProperty("authorization", "Bearer " + userToken);
+                        con.setRequestProperty("authorization", "Bearer " + userIdToken);
                         con.setUseCaches(false);
                         con.setDoOutput(true);
                         con.setDoInput(true);
@@ -139,9 +145,18 @@ public class BlockbirdAudit extends Thread {
                         String inputLine;
                         StringBuffer response = new StringBuffer();                
                         
-                        logger.info("API response: "+con.getResponseCode());
+                        int responseCode = con.getResponseCode();                        
+                        
                         while ((inputLine = in.readLine()) != null) {
                                 response.append(inputLine);
+                        }
+
+                        if (responseCode == 400) {
+                                logger.error("API Response code: "+responseCode+" - "+response);
+                        } else if (responseCode == 404) {
+                                logger.error("API Response code: "+responseCode+" - "+response);
+                        } else if (responseCode == 200) {
+                                logger.info("API Response code: "+responseCode+" - "+response);
                         }
                         auditQuery.clear(); // if everything went smoothly, then empty the query backlog
                         in.close();

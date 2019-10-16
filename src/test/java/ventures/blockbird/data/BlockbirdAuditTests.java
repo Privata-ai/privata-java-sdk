@@ -1,8 +1,8 @@
 package ventures.blockbird.data;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.Date;
+
+import static org.junit.Assert.assertEquals;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -23,7 +23,6 @@ public class BlockbirdAuditTests {
     public static void initBlockbirdAudit()
     {
         PropsUtil props = new PropsUtil("/test.properties");
-        System.out.println("Properties "+props.getProps("blockbirdAuditTestUrl"));
 
         bbAudit = BlockbirdAudit.getInstance(
             props.getProps("blockbirdAuditTestUrl"),
@@ -33,6 +32,10 @@ public class BlockbirdAuditTests {
             props.getProps("blockbirdAuditTestPassword")
             );
     }
+
+    /**
+     * Check that audit objects are being added to the queue
+     */
 
     @Test
     public void testAddQuery() {
@@ -53,7 +56,14 @@ public class BlockbirdAuditTests {
 
     @Test
     public void testRun() {
-        System.out.println("Lenght: "+bbAudit.getQueryCount());
+        int numberOfQueries = 5;
+        String[] columns = new String[3];
+        for (int row_count=0;row_count<numberOfQueries;row_count++){        
+            columns[0] = "firstname";
+            columns[1] = "lastname";
+            columns[2] = "address";
+            bbAudit.addQuery("peter", "group", "ClientTable", columns, "Read", new Date(), row_count);
+        }
         bbAudit.run();
         // no response so nothing to check
     }
