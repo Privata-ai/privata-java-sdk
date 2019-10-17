@@ -1,7 +1,5 @@
 package ventures.blockbird.util;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,11 +35,10 @@ public class PropsUtil {
 			this.props = new Properties();
 			loadProperties(props, propertyStream);
 			propertyStream.close();
-			logger.info("Using runtime properties file:" + propsName);
 			props.getProperty("firebaseApiKey");
 		}
 		catch (Exception ex) {
-			logger.info("Got an error while attempting to load the runtime properties", ex);			
+			logger.error("Got an error while attempting to load the runtime properties", ex);			
 		}
     }
 
