@@ -45,16 +45,16 @@ public class BlockbirdAudit extends Thread {
 	 */
 
 
-        protected BlockbirdAudit(String apiUrl, String appId, String dbId, String username, String password) {
+        protected BlockbirdAudit(String apiUrl, String appId, String appSecret, String dbId) {
                 this.auditQuery = new AuditJsonObj();
                 this.firebaseAuth = FireBaseAuth.getInstance();
                 this.apiUrl= apiUrl;            
                 this.appId = appId;             
                 this.dbId = dbId;   
                 try {
-                        this.firebaseAuth.auth(username, password);
+                        this.firebaseAuth.auth(appId, appSecret);
                 } catch (Exception e) {
-                        logger.error("Could not authenticate user "+username+" with error: "+e);
+                        logger.error("Could not authenticate Application "+appId+" with error: "+e);
                 }
         } 
 
@@ -70,9 +70,9 @@ public class BlockbirdAudit extends Thread {
          * @param password a valid password for the username on blockbird data
 	 */
         
-        public static BlockbirdAudit getInstance(String apiUrl, String appId, String dbId, String username, String password) {
+        public static BlockbirdAudit getInstance(String apiUrl, String appId, String appSecret, String dbId) {
                 if (instance == null ) {
-                        instance = new BlockbirdAudit(apiUrl, appId, dbId, username, password);
+                        instance = new BlockbirdAudit(apiUrl, appId, appSecret, dbId);
                 }
                 return instance;
         }
