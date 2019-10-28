@@ -49,13 +49,13 @@ public class FireBaseAuth {
     /**
      * Authenticate using email and password on 
      * 
-     * @param username
-     * @param password
+     * @param appId
+     * @param appSecret
      * @return idToken 
      * @throws Exception
      */
 
-    public void auth(String username, String password) throws Exception { 
+    public void auth(String appId, String appSecret) throws Exception { 
 
         HttpURLConnection urlRequest = null;
 
@@ -66,7 +66,7 @@ public class FireBaseAuth {
             urlRequest.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
             OutputStream os = urlRequest.getOutputStream();
             OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
-            osw.write("{\"email\":\""+username+"\",\"password\":\""+password+"\",\"returnSecureToken\":true}");
+            osw.write("{\"email\":\""+appId+"@blockbird.ventures"+"\",\"password\":\""+appSecret+"\",\"returnSecureToken\":true}");
             osw.flush();
             osw.close();
 
@@ -97,7 +97,7 @@ public class FireBaseAuth {
      */
      public String getIdToken(){
          if (idToken == null) {        
-             logger.error("Need to authenticate before verifying token"); 
+             logger.error("Need to authenticate before verifying token. idToken is null"); 
              return null;           
          }
         // check if expired

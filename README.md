@@ -1,6 +1,13 @@
 # Java SDK for Blockbird.data API
 This SDK can be used in Java Applications to send audit data to the blockbird.data API
 
+# Registering your Application
+In order to register your application, you must create an account on [blockbird.ventures](https://blockbird.ventures/data/#). When your account has been created, you can register your Application and select the sensitive data within your Database.
+
+During this process, you will receive an `AppID` and `AppSecret` which you will use to Authenticate your Application to our API.
+
+You can store your `AppID` and `AppSecret` as environmental variables in your java project. These are private credentials and must not be shared or made public.
+
 ## Installation
 Import to Maven using the following in your `pom.xml`:
 ``` xml
@@ -11,22 +18,17 @@ Import to Maven using the following in your `pom.xml`:
          <artifactId>data-blockbird-sdk</artifactId>
          <version>0.1-SNAPSHOT</version>
       </dependency>
-      <dependency>
-         <groupId>com.googlecode.json-simple</groupId>
-         <artifactId>json-simple</artifactId>
-         <version>1.1.1</version>
-      </dependency>
       ...
     </dependencies>
 ```
 
 ## Usage
 
-To record a auditable transaction, you first initiate Blockbird:
+To record a auditable transaction, you first instantiate the  BlockbirdAudit Object using the URL of the API, the `AppId` and `AppSecret` that you received during the On-Boarding process. You can instantiate the object like this:
 
 ``` java
 // add Blockbird Audit
-bbAudit = BlockbirdAudit.getInstance("URL-of-API","appId", "dbId", "username", "password");
+bbAudit = BlockbirdAudit.getInstance("URL-of-API","appId", "appSecret", "dbId");
 ```
 
 Then you add queries to your packet:
@@ -35,3 +37,8 @@ bbAudit.addQuery(clientUserId, clientRole, clientTable, clientRole, action("Crea
 
 ```
 
+Queries are batched in order to reduce network traffic. If you wish to force sending the current batch of queries, you can run:
+
+```java
+bbAudit.run();
+```
