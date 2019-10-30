@@ -52,11 +52,7 @@ public class BlockbirdAudit extends Thread {
                 this.appId = appId;             
                 this.dbId = dbId;   
                 try {
-<<<<<<< HEAD
-                        this.firebaseAuth.auth(username, password);
-=======
                         this.firebaseAuth.auth(appId, appSecret);
->>>>>>> master
                 } catch (Exception e) {
                         logger.error("Could not authenticate Application "+appId+" with error: "+e);
                 }
