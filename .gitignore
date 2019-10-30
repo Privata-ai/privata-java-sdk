@@ -85,3 +85,4 @@ log4j.properties
 src/main/resources/test.properties
 src/main/resources/test.local.properties
 src/main/resources/sample-data.json
+src/main/resources/sample-data2.json
