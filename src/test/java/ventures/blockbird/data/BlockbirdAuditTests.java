@@ -26,9 +26,8 @@ public class BlockbirdAuditTests {
 
         bbAudit = BlockbirdAudit.getInstance(
             props.getProps("blockbirdAuditTestUrl"),
-            props.getProps("blockbirdAuditTestAppId"),
-            props.getProps("blockbirdAuditTestAppSecret"),
-            props.getProps("blockbirdAuditTestDbId")
+            props.getProps("blockbirdAuditTestDbKey"),
+            props.getProps("blockbirdAuditTestDbSecret")
             );
     }
 

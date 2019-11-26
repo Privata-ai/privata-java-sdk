@@ -24,9 +24,8 @@ public class BlockbirdAudit extends Thread {
 
         private AuditJsonObj auditQuery;        
         private String apiUrl;
-        private String appId;
-        private String dbId;
-        private static int maxQueryQueueLenght = 10;
+        private String dbKey;
+        private static int maxQueryQueueLength = 10;
         private FireBaseAuth firebaseAuth;
 
 
@@ -38,23 +37,18 @@ public class BlockbirdAudit extends Thread {
 	 * This is a class to handle the Blockbird Logs and send to the API
 	 * 
 	 * @param apiUrl the URL of the API
-         * @param appId the ID of the app on blockbird.data
-         * @param dbId the ID of the db on blockbird.data
-         * @param username a valid username on blockbird data
-         * @param password a valid password for the username on blockbird data
+         * @param dbKey the key (ID) of the database on blockbird.data
+         * @param dbSecret 
 	 */
-
-
-        protected BlockbirdAudit(String apiUrl, String appId, String appSecret, String dbId) {
+        protected BlockbirdAudit(String apiUrl, String dbKey, String dbSecret) {
                 this.auditQuery = new AuditJsonObj();
                 this.firebaseAuth = FireBaseAuth.getInstance();
                 this.apiUrl= apiUrl;            
-                this.appId = appId;             
-                this.dbId = dbId;   
+                this.dbKey = dbKey;             
                 try {
-                        this.firebaseAuth.auth(appId, appSecret);
+                        this.firebaseAuth.auth(dbKey, dbSecret);
                 } catch (Exception e) {
-                        logger.error("Could not authenticate Application "+appId+" with error: "+e);
+                        logger.error("Could not authenticate Application "+dbKey+" with error: "+e);
                 }
         } 
 
@@ -64,15 +58,12 @@ public class BlockbirdAudit extends Thread {
          * exists, it will not create a new instance
 	 * 
 	 * @param apiUrl the URL of the API
-         * @param appId the ID of the app on blockbird.data
-         * @param dbId the ID of the db on blockbird.data
-         * @param username a valid username on blockbird data
-         * @param password a valid password for the username on blockbird data
+         * @param dbKey the ID of the app on blockbird.data
+         * @param dbSecret
 	 */
-        
-        public static BlockbirdAudit getInstance(String apiUrl, String appId, String appSecret, String dbId) {
+        public static BlockbirdAudit getInstance(String apiUrl, String dbKey, String dbSecret) {
                 if (instance == null ) {
-                        instance = new BlockbirdAudit(apiUrl, appId, appSecret, dbId);
+                        instance = new BlockbirdAudit(apiUrl, dbKey, dbSecret);
                 }
                 return instance;
         }
@@ -87,12 +78,10 @@ public class BlockbirdAudit extends Thread {
          * @param action the action that the user is performing on the data [Read, Write, Delete]
          * @param date the timestamp of the access
 	 */
-        
-        public void addQuery(String user, String group, String table, String[] columns, String action,
-                        Date date, int row_count) {
+        public void addQuery(String user, String group, String table, String[] columns, String action, Date date, int row_count) {
                 auditQuery.appendQuery(user, group, table, columns, action, date, row_count);
-                // if auditQuery has reached maxQueryQueueLengith, then send to API
-                if (auditQuery.getQueryCount() > maxQueryQueueLenght) {
+                // if auditQuery has reached maxQueryQueueLength, then send to API
+                if (auditQuery.getQueryCount() > maxQueryQueueLength) {
                         run();
                 }
                 return;
@@ -120,7 +109,7 @@ public class BlockbirdAudit extends Thread {
                 if (auditQuery.getQueryCount() > 0) {
 
                 try {
-                        URL url = new URL(apiUrl+"/applications/"+appId+"/databases/"+dbId+"/queries");
+                        URL url = new URL(apiUrl+"/databases/"+dbKey+"/queries");
                         HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
                         String userIdToken = firebaseAuth.getIdToken();

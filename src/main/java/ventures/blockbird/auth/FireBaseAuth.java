@@ -49,13 +49,12 @@ public class FireBaseAuth {
     /**
      * Authenticate using email and password on 
      * 
-     * @param appId
-     * @param appSecret
+     * @param dbKey
+     * @param dbSecret
      * @return idToken 
      * @throws Exception
      */
-
-    public void auth(String appId, String appSecret) throws Exception { 
+    public void auth(String dbKey, String dbSecret) throws Exception { 
 
         HttpURLConnection urlRequest = null;
 
@@ -66,7 +65,7 @@ public class FireBaseAuth {
             urlRequest.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
             OutputStream os = urlRequest.getOutputStream();
             OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
-            osw.write("{\"email\":\""+appId+"@blockbird.ventures"+"\",\"password\":\""+appSecret+"\",\"returnSecureToken\":true}");
+            osw.write("{\"email\":\""+dbKey+"@blockbird.ventures"+"\",\"password\":\""+dbSecret+"\",\"returnSecureToken\":true}");
             osw.flush();
             osw.close();
 
@@ -74,20 +73,17 @@ public class FireBaseAuth {
 
             JsonParser jp = new JsonParser(); //from gson
             JsonElement root = jp.parse(new InputStreamReader((InputStream) urlRequest.getContent())); //Convert the input stream to a json element
-            JsonObject rootobj = root.getAsJsonObject(); //May be an array, may be an object. 
+            JsonObject rootObj = root.getAsJsonObject(); //May be an array, may be an object. 
 
-            this.idToken = rootobj.get("idToken").getAsString();
-            this.refreshToken = rootobj.get("refreshToken").getAsString();
-            this.expiryTime = new Date().getTime() + (rootobj.get("expiresIn").getAsLong()*1000); // get expiry time in miliseconds
-            
-
+            this.idToken = rootObj.get("idToken").getAsString();
+            this.refreshToken = rootObj.get("refreshToken").getAsString();
+            this.expiryTime = new Date().getTime() + (rootObj.get("expiresIn").getAsLong()*1000); // get expiry time in miliseconds
         } catch (Exception e) {
             logger.error(e);
             return ;
         } finally {
             urlRequest.disconnect();
         }
-
         return ;
     }
 
@@ -127,20 +123,17 @@ public class FireBaseAuth {
     
                 JsonParser jp = new JsonParser(); //from gson
                 JsonElement root = jp.parse(new InputStreamReader((InputStream) urlRequest.getContent())); //Convert the input stream to a json element
-                JsonObject rootobj = root.getAsJsonObject(); //May be an array, may be an object. 
+                JsonObject rootObj = root.getAsJsonObject(); //May be an array, may be an object. 
 
-                this.idToken = rootobj.get("id_token").getAsString();
-                this.expiryTime = new Date().getTime() + (rootobj.get("expires_in").getAsLong()*1000); // reset the timer
+                this.idToken = rootObj.get("id_token").getAsString();
+                this.expiryTime = new Date().getTime() + (rootObj.get("expires_in").getAsLong()*1000); // reset the timer
             }
             catch (Exception e) {
                 logger.error(e);
             } finally {
                 urlRequest.disconnect();
             }
-    
-
         }
-
         return idToken;
      }
 
