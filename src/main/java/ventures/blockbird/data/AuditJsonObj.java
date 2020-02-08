@@ -10,7 +10,7 @@ import org.json.simple.JSONObject;
 
 public class AuditJsonObj {
 
-       private final JSONArray queryArray;
+       private JSONArray queryArray;
        private int queryCount;
 
        public AuditJsonObj() {
