@@ -18,9 +18,9 @@ public class AuditJsonObj {
               this.queryArray = new JSONArray();
        }
 
-       public void appendQuery(final String user, final String group, final String table, final String[] columns,
-                     final String action, final Date date, final int row_count) {
-              final Map<String, Object> queries = createJsonQueries(user, group, table, columns, action, date,
+       public void appendQuery(String user, String group, String table, String[] columns,
+                     String action, Date date, int row_count) {
+              Map<String, Object> queries = createJsonQueries(user, group, table, columns, action, date,
                             row_count);
               this.queryArray.add(queries);
               this.queryCount++;
@@ -43,7 +43,7 @@ public class AuditJsonObj {
         */
 
        public JSONObject getJsonObj() {
-              final JSONObject payload = new JSONObject();
+              JSONObject payload = new JSONObject();
               payload.put("queries", this.queryArray);
               return payload;
        }
@@ -67,25 +67,25 @@ public class AuditJsonObj {
               return queryCount;
        }
 
-       public Map<String, Object> createJsonQueries(final String user, final String group, final String table,
-                     final String[] columns, final String action, final Date date, final int row_count) {
-              final int timestamp = (int) getUnixTime(date);
+       public Map<String, Object> createJsonQueries(String user, String group, String table,
+                     String[] columns, String action, Date date, int row_count) {
+              int timestamp = (int) getUnixTime(date);
 
               // add columns
-              final ArrayList<String> columnList = new ArrayList<String>();
-              for (final String column : columns) {
+              ArrayList<String> columnList = new ArrayList<String>();
+              for (String column : columns) {
                      columnList.add(column);
               }
 
               // add tables
-              final JSONArray tablesArray = new JSONArray();
-              final JSONObject tablesObj = new JSONObject();
+              JSONArray tablesArray = new JSONArray();
+              JSONObject tablesObj = new JSONObject();
               tablesObj.put("table", table);
               tablesObj.put("columns", columnList);
               tablesArray.add(tablesObj);
 
               // combine it all
-              final Map<String, Object> m = new LinkedHashMap<String, Object>();
+              Map<String, Object> m = new LinkedHashMap<String, Object>();
               m.put("tables", tablesArray);
               m.put("user", user);
               m.put("group", group);
@@ -99,8 +99,8 @@ public class AuditJsonObj {
         * Return UNIX time
         */
 
-       private long getUnixTime(final Date date) {
-              final long unixTime = date.getTime() / 1000;
+       private long getUnixTime(Date date) {
+              long unixTime = date.getTime() / 1000;
               return unixTime;
        }
 }
