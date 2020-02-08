@@ -40,15 +40,16 @@ public class BlockbirdAuditTests {
         int numberOfQueries = 5;
         String[] columns = new String[3];
         for (int row_count=0;row_count<numberOfQueries;row_count++){        
-            columns[0] = "firstname";
+            columns[0] = "familyName";
             columns[1] = "lastname";
             columns[2] = "address";
-            bbAudit.addQuery("peter", "group", "ClientTable", columns, "Read", new Date(), row_count);
+            // must be a table name and column name that is being tracked!
+            bbAudit.addQuery("peter", "group", "familyName", columns, "Read", new Date(), row_count);
         }
         assertEquals(numberOfQueries, bbAudit.getQueryCount());
     }
 
-    /**
+    /**`
      * Check that it connects to the API correctly
      */
 
@@ -57,14 +58,12 @@ public class BlockbirdAuditTests {
         int numberOfQueries = 5;
         String[] columns = new String[3];
         for (int row_count=0;row_count<numberOfQueries;row_count++){        
-            columns[0] = "firstname";
+            columns[0] = "familyName";
             columns[1] = "lastname";
             columns[2] = "address";
-            bbAudit.addQuery("peter", "group", "ClientTable", columns, "Read", new Date(), row_count);
+            bbAudit.addQuery("mary", "group_db2", "personName", columns, "Read", new Date(), 10);
         }
         bbAudit.run();
         // no response so nothing to check
     }
-
-
 }

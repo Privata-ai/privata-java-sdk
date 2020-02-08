@@ -9,7 +9,7 @@ import java.net.URL;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
-import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
 
 import ventures.blockbird.auth.FireBaseAuth;
 
@@ -122,10 +122,9 @@ public class BlockbirdAudit extends Thread {
                         con.setDoOutput(true);
                         con.setDoInput(true);
 
-                        JSONObject jsonObj = auditQuery.getJsonObj();
-
+                        JSONArray jsonArr = auditQuery.getJsonArr();
                         try(OutputStream os = con.getOutputStream()) {
-                                byte[] input = jsonObj.toString().getBytes("utf-8");
+                                byte[] input = jsonArr.toString().getBytes("utf-8");
                                 os.write(input, 0, input.length);                        
                         }
                         // Get the response
@@ -144,10 +143,10 @@ public class BlockbirdAudit extends Thread {
                                 logger.error("API Response code: "+responseCode+" - "+response);
                         } else if (responseCode == 404) {
                                 logger.error("API Response code: "+responseCode+" - "+response);
-                        } else if (responseCode == 200) {
+                        } else if (responseCode == 201) {
                                 logger.info("API Response code: "+responseCode+" - "+response);
-                        }
-                        auditQuery.clear(); // if everything went smoothly, then empty the query backlog
+                                auditQuery.clear(); // if everything went smoothly, then empty the query backlog
+                        }  
                         in.close();
                                                                     
                 } catch (IOException e) {
