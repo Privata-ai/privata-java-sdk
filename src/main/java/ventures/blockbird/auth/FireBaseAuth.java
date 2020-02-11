@@ -92,7 +92,7 @@ public class FireBaseAuth {
      *  @return idToken returns the idToken
      */
      public String getIdToken(){
-         if (idToken == null) {        
+         if (this.idToken == null) {        
              logger.error("Need to authenticate before verifying token. idToken is null"); 
              return null;           
          }
@@ -134,7 +134,7 @@ public class FireBaseAuth {
                 urlRequest.disconnect();
             }
         }
-        return idToken;
+        return this.idToken;
      }
 
 
