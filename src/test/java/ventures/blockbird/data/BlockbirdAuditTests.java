@@ -22,7 +22,7 @@ public class BlockbirdAuditTests {
     @BeforeClass
     public static void initBlockbirdAudit()
     {
-        PropsUtil props = new PropsUtil("/test.properties");
+        PropsUtil props = new PropsUtil("/test.local.properties");
 
         bbAudit = BlockbirdAudit.getInstance(
             props.getProps("blockbirdAuditTestUrl"),
@@ -59,7 +59,7 @@ public class BlockbirdAuditTests {
         String[] columns = new String[3];
         for (int row_count=0;row_count<numberOfQueries;row_count++){        
             columns[0] = "familyName";
-            columns[1] = "lastname";
+            columns[1] = "givenName";
             columns[2] = "address";
             bbAudit.addQuery("mary", "group_db2", "personName", columns, "Read", new Date(), 10);
         }
