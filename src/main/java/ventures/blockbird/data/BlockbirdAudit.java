@@ -8,6 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Date;
 
+// TODO: Guava adds a large overhead to the package. 2.8MB and entire package is 3.2MB
 import com.google.common.collect.HashMultimap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -53,6 +54,7 @@ public class BlockbirdAudit extends Thread {
                 try {
                         this.firebaseAuth.auth(dbKey, dbSecret);
                         getTablesWithPersonalData();
+                        logger.info("Auditing the following tables and columns:\n" + piiTableColumns.toString());
                 } catch (Exception e) {
                         logger.error("Could not authenticate Application " + dbKey + " with error: " + e);
                 }
@@ -84,6 +86,7 @@ public class BlockbirdAudit extends Thread {
          * @param action  the action that the user is performing on the data [Read,
          *                Write, Delete]
          * @param date    the timestamp of the access
+         * @param row_count the number of rows returned by the query
          */
         public void addQuery(String user, String group, String table, String[] columns, String action, Date date,
                         int row_count) {

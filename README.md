@@ -46,7 +46,9 @@ bbAudit.addQuery(clientUserId, clientRole, clientTable, clientRole, action("Crea
 ```
 
 Queries are batched in order to reduce network traffic and only tables and columns that have been flagged as containing Personal Data are sent. If you wish to force sending the current batch of queries, you can run:
-s
+
 ```java
 bbAudit.run();
 ```
+
+> Note: Blockbird Data saves table and column names in `camelCase` format.

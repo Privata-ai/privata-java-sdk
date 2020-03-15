@@ -7,11 +7,15 @@ import java.util.Map;
 
 import com.google.common.collect.HashMultimap;
 
+import org.apache.log4j.Logger;
 // TODO: Change org.json.simple.JSONArray to import com.google.gson.JsonArray
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 public class AuditJsonObj {
+
+       final static Logger logger = Logger.getLogger(AuditJsonObj.class);
+
 
        private final JSONArray queryArray;
        private int queryCount;
@@ -100,19 +104,24 @@ public class AuditJsonObj {
         * @param piiTableColumns
         * @return
         */
-       public Map<String, Object> createJsonQueries(final String user, final String group, final String table,
+       public Map<String, Object> createJsonQueries(final String user, final String group, String table,
                      final String[] columns, final String action, final Date date, final int row_count,
                      final HashMultimap<String, String> piiTableColumns) {
               final int timestamp = (int) getUnixTime(date);
               final Map<String, Object> m = new LinkedHashMap<String, Object>();
+
+              // Blockbird puts all Table and Column names in camelCase.
+              // Therefore we add this code to ensure that we are checking correctly:
+              table = Character.toLowerCase(table.charAt(0)) + table.substring(1);
 
               // check if table is PII
               if (piiTableColumns.containsKey(table)) {
 
                      // add columns
                      final ArrayList<String> columnList = new ArrayList<String>();
-                     for (final String column : columns) {
-                            if (piiTableColumns.containsValue(column)) {
+                     for (String column : columns) {
+                            column = Character.toLowerCase(column.charAt(0)) + column.substring(1);
+                            if (piiTableColumns.containsEntry(table, column)) {
                                    columnList.add(column);
                             }
                      }
