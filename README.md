@@ -20,7 +20,7 @@ Import to Maven using the following in your `pom.xml`:
       <dependency>
          <groupId>ventures.blockbird.data</groupId>
          <artifactId>data-blockbird-sdk</artifactId>
-         <version>0.1-SNAPSHOT</version>
+         <version>0.3-SNAPSHOT</version>
       </dependency>
       ...
     </dependencies>
@@ -36,6 +36,7 @@ You can instantiate the object like this:
 // add Blockbird Audit
 bbAudit = BlockbirdAudit.getInstance("URL-of-API","dbKey","dbSecret");
 ```
+On instantion, the Tables and Columns that have been flagged as containing Personal Data during the On-boarding phase will be retrieved. 
 
 Then you add queries to your packet:
 
@@ -44,8 +45,10 @@ bbAudit.addQuery(clientUserId, clientRole, clientTable, clientRole, action("Crea
 
 ```
 
-Queries are batched in order to reduce network traffic. If you wish to force sending the current batch of queries, you can run:
+Queries are batched in order to reduce network traffic and only tables and columns that have been flagged as containing Personal Data are sent. If you wish to force sending the current batch of queries, you can run:
 
 ```java
 bbAudit.run();
 ```
+
+> Note: Blockbird Data saves table and column names in `camelCase` format.

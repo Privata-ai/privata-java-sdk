@@ -4,7 +4,7 @@
   <groupId>ventures.blockbird.data</groupId>
   <artifactId>data-blockbird-sdk</artifactId>
   <packaging>jar</packaging>
-  <version>0.2-SNAPSHOT</version>
+  <version>0.3-SNAPSHOT</version>
   <name>data-blockbird-sdk</name>
   <url>http://maven.apache.org</url>
 
@@ -26,11 +26,16 @@
       <groupId>com.googlecode.json-simple</groupId>
       <artifactId>json-simple</artifactId>
       <version>1.1.1</version>
-    </dependency>
+    </dependency>  
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
       <version>2.8.5</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>28.2-jre</version>
     </dependency>
     <dependency>
       <groupId>log4j</groupId>
@@ -46,7 +51,7 @@
         <includes>
           <include>project.properties</include>
           <include>log4j.properties</include>
-          <include>test.properties</include>
+          <include>test.local.properties</include>
         </includes>
       </resource>
     </resources>
