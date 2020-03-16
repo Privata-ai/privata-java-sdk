@@ -14,13 +14,14 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import ventures.blockbird.util.PropsUtil;
 
 public class FireBaseAuth {
 
-    final static Logger logger = Logger.getLogger(FireBaseAuth.class);
+    final static Logger logger = LogManager.getLogger(FireBaseAuth.class);
 
     private static final String AUTH_BASE_URL = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/";
     private static final String VERIFY_BASE_URL = "https://securetoken.googleapis.com/v1/token";

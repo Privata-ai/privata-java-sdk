@@ -14,7 +14,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
 
 import ventures.blockbird.auth.FireBaseAuth;
@@ -35,7 +36,7 @@ public class BlockbirdAudit extends Thread {
         private FireBaseAuth firebaseAuth;
         private HashMultimap<String, String> piiTableColumns;
 
-        final static Logger logger = Logger.getLogger(BlockbirdAudit.class);
+        final static Logger logger = LogManager.getLogger(BlockbirdAudit.class);
 
         private static BlockbirdAudit instance = null;
 

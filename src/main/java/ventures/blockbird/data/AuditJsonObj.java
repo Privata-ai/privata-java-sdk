@@ -7,14 +7,15 @@ import java.util.Map;
 
 import com.google.common.collect.HashMultimap;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 // TODO: Change org.json.simple.JSONArray to import com.google.gson.JsonArray
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 public class AuditJsonObj {
 
-       final static Logger logger = Logger.getLogger(AuditJsonObj.class);
+       final static Logger logger = LogManager.getLogger(AuditJsonObj.class);
 
 
        private final JSONArray queryArray;
