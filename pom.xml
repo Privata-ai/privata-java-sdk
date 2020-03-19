@@ -61,4 +61,12 @@
       </resource>
     </resources>
   </build>
+
+  <distributionManagement>
+    <repository>
+      <id>github</id>
+      <name>Blockbird Data SDK</name>
+      <url>https://maven.pkg.github.com/blockbirdLabs/data-java-sdk</url>
+    </repository>
+ </distributionManagement>
 </project>
