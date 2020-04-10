@@ -22,13 +22,7 @@ public class BlockbirdAuditTests {
     @BeforeClass
     public static void initBlockbirdAudit()
     {
-        PropsUtil props = new PropsUtil("/test.local.properties");
-
-        bbAudit = BlockbirdAudit.getInstance(
-            props.getProps("blockbirdAuditTestUrl"),
-            props.getProps("blockbirdAuditTestDbKey"),
-            props.getProps("blockbirdAuditTestDbSecret")
-            );
+        bbAudit = new BlockbirdAudit(false, "https://api-staging.blockbird.ventures");
     }
 
     /**

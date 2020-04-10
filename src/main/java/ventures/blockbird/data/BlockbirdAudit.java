@@ -6,16 +6,19 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Date;
+import java.util.*;
 
 // TODO: Guava adds a large overhead to the package. 2.8MB and entire package is 3.2MB
 import com.google.common.collect.HashMultimap;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.google.gson.JsonParser;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
 import org.json.simple.JSONArray;
 
 import ventures.blockbird.auth.FireBaseAuth;
@@ -29,8 +32,9 @@ import ventures.blockbird.auth.FireBaseAuth;
 public class BlockbirdAudit extends Thread {
 
         private AuditJsonObj auditQuery;
+        private boolean sandbox;
         private String apiUrl;
-        private String dbKey;
+        private String dbId;
         private static int maxQueryQueueLength = 10;
         private final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11";
         private FireBaseAuth firebaseAuth;
@@ -40,76 +44,80 @@ public class BlockbirdAudit extends Thread {
 
         private static BlockbirdAudit instance = null;
 
+
+        /**
+         * This is a class to handle the Blockbird Logs and send to the API
+         * 
+         * @param sandbox  option to run in sandbox mode
+         * @param apiUrl   the URL of the API
+         */
+        protected BlockbirdAudit(boolean sandbox, String apiUrl) {
+                if(!sandbox) {
+                        throw new Error("Production environment not available. Please use the sandbox environment.");
+                }
+                this.sandbox = sandbox;
+                this.apiUrl = apiUrl;
+                this.auditQuery = new AuditJsonObj();
+        }
+
+        /**
+         * This is a class to handle the Blockbird Logs and send to the API
+         * 
+         */
+        protected BlockbirdAudit() {
+                this(false, "https://api-staging.blockbird.ventures");
+        }
+
+         /**
+         * This is a class to handle the Blockbird Logs and send to the API
+         * 
+         * @param sandbox  option to run in sandbox mode
+         */
+        protected BlockbirdAudit(boolean sandbox) {
+                this(sandbox, "https://api-staging.blockbird.ventures");
+        }
+
         /**
          * This is a class to handle the Blockbird Logs and send to the API
          * 
          * @param apiUrl   the URL of the API
-         * @param dbKey    the key (ID) of the database on blockbird.data
+         */
+        protected BlockbirdAudit(String apiUrl) {
+                this(false, apiUrl);
+        }
+
+        /**
+         * This is a class to handle the Blockbird Logs and send to the API
+         * 
+         * @param dbId     the ID of the app on blockbird.data
          * @param dbSecret
          */
-        protected BlockbirdAudit(String apiUrl, String dbKey, String dbSecret) {
-                this.auditQuery = new AuditJsonObj();
-                this.firebaseAuth = FireBaseAuth.getInstance();
-                this.apiUrl = apiUrl;
-                this.dbKey = dbKey;
+        public int initialize(String dbId, String dbSecret) throws Exception {
                 try {
-                        this.firebaseAuth.auth(dbKey, dbSecret);
-                        getTablesWithPersonalData();
-                        logger.info("Auditing the following tables and columns:\n" + piiTableColumns.toString());
+                        this.firebaseAuth.auth(dbId, dbSecret);
+                        this.dbId = dbId;
+                        return 200;
                 } catch (Exception e) {
-                        logger.error("Could not authenticate Application " + dbKey + " with error: " + e);
+                        logger.error("Could not authenticate Application " + dbId + " with error: " + e);
+                        throw e;
                 }
         }
 
         /**
-         * This method will return an instance of the BlockbirdAudit class. If it
-         * already exists, it will not create a new instance
+         * This method sends a array of queries to the API
          * 
-         * @param apiUrl   the URL of the API
-         * @param dbKey    the ID of the app on blockbird.data
-         * @param dbSecret
+         * @param queries Array of queries
          */
-        public static BlockbirdAudit getInstance(String apiUrl, String dbKey, String dbSecret) {
-                if (instance == null) {
-                        instance = new BlockbirdAudit(apiUrl, dbKey, dbSecret);
-                }
-                return instance;
-        }
+        public void sendQueries(JsonArray queries) {
+                logger.info("Auditing the following tables and columns:\n" + piiTableColumns.toString());
 
-        /**
-         * This method appends a query to the JSON object
-         * 
-         * @param user    the user that is accessing data on the client application
-         * @param group   the client group that the user belongs to
-         * @param table   the client database table that the user is accessing
-         * @param columns the list of columns on the client database that the user is
-         *                accessing
-         * @param action  the action that the user is performing on the data [Read,
-         *                Write, Delete]
-         * @param date    the timestamp of the access
-         * @param row_count the number of rows returned by the query
-         */
-        public void addQuery(String user, String group, String table, String[] columns, String action, Date date,
-                        int row_count) {
-                auditQuery.appendQuery(user, group, table, columns, action, date, row_count, this.piiTableColumns);
-                // if auditQuery has reached maxQueryQueueLength, then send to API
-                if (auditQuery.getQueryCount() > maxQueryQueueLength) {
-                        run();
-                }
+                String idToken = firebaseAuth.getIdToken();
+
+                getTablesWithPersonalData();
+
                 return;
         }
 
-        /**
-         * This method returns the number of queries in the JSON Object
-         * 
-         * @return the number of queries left in the queue
-         */
-        public int getQueryCount() {
-                if (auditQuery == null) {
-                        return 0;
-                }
-                return auditQuery.getQueryCount();
-        }
 
         /**
          * This method sends the JSON object to the API
@@ -121,7 +129,7 @@ public class BlockbirdAudit extends Thread {
                 if (auditQuery.getQueryCount() > 0) {
 
                         try {
-                                URL url = new URL(apiUrl + "/databases/" + dbKey + "/queries");
+                                URL url = new URL(this.apiUrl + "/databases/" + this.dbId + "/queries");
                                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
                                 String userIdToken = firebaseAuth.getIdToken();
@@ -176,10 +184,9 @@ public class BlockbirdAudit extends Thread {
          * 
          * @return some sort of HashMultiMap/Hashset
          */
-
         private void getTablesWithPersonalData() {
                 try {
-                        URL url = new URL(apiUrl + "/databases/" + this.dbKey);
+                        URL url = new URL(this.apiUrl + "/databases/" + this.dbId);
                         HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
                         String userIdToken = firebaseAuth.getIdToken();
@@ -226,8 +233,9 @@ public class BlockbirdAudit extends Thread {
          * 
          * @param jsonResponse
          */
-
         private void addPiiTablesAndColumnsToHashtable(String jsonResponse) {
+                // clear before addind updated tables/columns with personal data
+                this.piiTableColumns.clear(); 
 
                 JsonParser jsonParser = new JsonParser();
                 JsonObject jsonObject = (JsonObject) jsonParser.parse(jsonResponse);
@@ -253,6 +261,80 @@ public class BlockbirdAudit extends Thread {
                         }
                 }
                 return;
+        }
+
+        /**
+         * This method filters the queries submitted that have personal data
+         * 
+         * @return Array of queries that have personal data
+         */
+
+        private void getQueriesWithPersonalData(JsonArray queries) {
+                try {
+                        JsonArray queriesWithPersonalData;
+                        // Blockbird puts all Table and Column names in camelCase.
+                        // Therefore we add this code to ensure that we are checking correctly:
+                        //String table = Character.toLowerCase(table.charAt(0)) + table.substring(1);
+
+                        for (int queryIndex = 0 ; queryIndex < queries.size(); queryIndex++) {
+
+                                JsonObject query = queries.get(queryIndex).getAsJsonObject();
+                                
+                                if(query.has("sql")){
+                                        queriesWithPersonalData.add(query);
+                                }
+                                else {
+                                        boolean isPersonalData = false;
+                                        JsonArray tablesWithPersonalData;
+                                        JsonArray tables = query.get("tables").getAsJsonArray();
+                                        
+                                        for (int tableIndex = 0 ; tableIndex < tables.size(); tableIndex++) {
+                                                JsonObject table = tables.get(tableIndex).getAsJsonObject();
+                                                String tableName = table.get("table").getAsString();
+
+                                                // check if table is PII
+                                                if (this.piiTableColumns.containsKey(tableName)) {
+                                                        String[] columnsWithPersonalData;
+
+                                                        Set<String> columns = this.piiTableColumns.get(table);
+                                                        JsonArray columnNamesJson = table.get("columns").getAsJsonArray();
+                                                        
+                                                        for (int columnIndex = 0 ; columnIndex < columnNames.size(); columnIndex++) {
+                                                                if (columns.contains(columns.get(tableIndex).getAsString())) {
+                                                                        columnsWithPersonalData.add(columnNames[columnIndex]);
+                                                                        isPersonalData = true;
+                                                                }
+                                                        }
+
+                                                        JsonObject tableWithPersonalData = new JsonObject();
+                                                        tableWithPersonalData.addProperty("table", tableName);
+                                                        tableWithPersonalData.addProperty("columns", columnsWithPersonalData);
+
+                                                        tablesWithPersonalData.add(tableWithPersonalData);
+                                                }
+                                        }
+
+                                        if (isPersonalData) {
+                                                JsonObject queryWithPersonalData = new JsonObject();
+                                                queryWithPersonalData.addProperty("tables", tablesWithPersonalData);
+                                                queryWithPersonalData.addProperty("action", query.get("action").getAsString());
+                                                queryWithPersonalData.addProperty("timestamp", query.get("timestamp").getInt());
+                                                queryWithPersonalData.addProperty("user", query.get("user").getAsString());
+                                                queryWithPersonalData.addProperty("group", query.get("group").getAsString());
+                                                queryWithPersonalData.addProperty("returnedRows", query.get("returnedRows").getInt());
+
+                                                if(query.has("userIP")){
+                                                        queryWithPersonalData.addProperty("userIP", query.get("userIP").getAsString());
+                                                }
+
+                                                queriesWithPersonalData.add(queryWithPersonalData);
+                                        }
+                                }
+                        }
+                        
+                } catch (Exception e) {
+                        logger.error(e);
+                }
         }
 
         /**
