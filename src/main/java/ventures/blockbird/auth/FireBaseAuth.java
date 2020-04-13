@@ -50,9 +50,7 @@ public class FirebaseAuth {
      * @throws Exception
      */
     public void auth(String dbId, String dbSecret) throws Exception {
-
         HttpURLConnection urlRequest = null;
-
         try {
             URL url = new URL(AUTH_BASE_URL + OPERATION_AUTH + "?key=" + this.firebaseKey);
             urlRequest = (HttpURLConnection) url.openConnection();
@@ -90,10 +88,10 @@ public class FirebaseAuth {
      * 
      * @return idToken returns the idToken
      */
-    public String getIdToken() {
+    public String getIdToken() throws Exception {
         if (this.idToken == null) {
             logger.error("Need to authenticate before verifying token. idToken is null");
-            return null;
+            throw new Error("Need to authenticate before verifying token. idToken is null");
         }
         // check if expired
         long now = new Date().getTime();
@@ -129,6 +127,7 @@ public class FirebaseAuth {
                 this.expiryTime = new Date().getTime() + (rootObj.get("expires_in").getAsLong() * 1000);
             } catch (Exception e) {
                 logger.error(e);
+                throw e;
             } finally {
                 urlRequest.disconnect();
             }
