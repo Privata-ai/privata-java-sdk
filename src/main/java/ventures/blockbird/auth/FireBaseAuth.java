@@ -19,9 +19,9 @@ import org.apache.logging.log4j.Logger;
 
 import ventures.blockbird.util.PropsUtil;
 
-public class FireBaseAuth {
+public class FirebaseAuth {
 
-    final static Logger logger = LogManager.getLogger(FireBaseAuth.class);
+    final static Logger logger = LogManager.getLogger(FirebaseAuth.class);
 
     private static final String AUTH_BASE_URL = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/";
     private static final String VERIFY_BASE_URL = "https://securetoken.googleapis.com/v1/token";
@@ -32,18 +32,13 @@ public class FireBaseAuth {
     private Long expiryTime;
     private String idToken = null;
 
-    private static FireBaseAuth instance = null;
-
-    protected FireBaseAuth() {
+    public FirebaseAuth(boolean sandbox) {
         PropsUtil util = new PropsUtil("/project.properties");
-        this.firebaseKey = util.getProps("firebaseApiKey");
-    }
-
-    public static FireBaseAuth getInstance() {
-        if (instance == null) {
-            instance = new FireBaseAuth();
+        if (sandbox) {
+            this.firebaseKey = util.getProps("firebaseApiKeyLocal");
+        } else {
+            this.firebaseKey = util.getProps("firebaseApiKey");
         }
-        return instance;
     }
 
     /**
@@ -72,17 +67,15 @@ public class FireBaseAuth {
 
             urlRequest.connect();
 
-            JsonParser jp = new JsonParser(); // from gson
-            JsonElement root = jp.parse(new InputStreamReader((InputStream) urlRequest.getContent())); // Convert the
-                                                                                                       // input stream
-                                                                                                       // to a json
-                                                                                                       // element
-            JsonObject rootObj = root.getAsJsonObject(); // May be an array, may be an object.
-
+            JsonParser jp = new JsonParser();
+            // Convert the input stream to a json element
+            JsonElement root = jp.parse(new InputStreamReader((InputStream) urlRequest.getContent()));
+            // May be an array, may be an object.
+            JsonObject rootObj = root.getAsJsonObject();
             this.idToken = rootObj.get("idToken").getAsString();
             this.refreshToken = rootObj.get("refreshToken").getAsString();
-            this.expiryTime = new Date().getTime() + (rootObj.get("expiresIn").getAsLong() * 1000); // get expiry time
-                                                                                                    // in miliseconds
+            // get expiry time in miliseconds
+            this.expiryTime = new Date().getTime() + (rootObj.get("expiresIn").getAsLong() * 1000);
         } catch (Exception e) {
             logger.error(e);
             throw e;
@@ -126,18 +119,14 @@ public class FireBaseAuth {
                 }
 
                 urlRequest.connect();
-
-                JsonParser jp = new JsonParser(); // from gson
-                JsonElement root = jp.parse(new InputStreamReader((InputStream) urlRequest.getContent())); // Convert
-                                                                                                           // the input
-                                                                                                           // stream to
-                                                                                                           // a json
-                                                                                                           // element
-                JsonObject rootObj = root.getAsJsonObject(); // May be an array, may be an object.
-
+                JsonParser jp = new JsonParser();
+                // Convert the input stream to a json element
+                JsonElement root = jp.parse(new InputStreamReader((InputStream) urlRequest.getContent()));
+                // May be an array, may be an object.
+                JsonObject rootObj = root.getAsJsonObject();
                 this.idToken = rootObj.get("id_token").getAsString();
-                this.expiryTime = new Date().getTime() + (rootObj.get("expires_in").getAsLong() * 1000); // reset the
-                                                                                                         // timer
+                // Reset the timer
+                this.expiryTime = new Date().getTime() + (rootObj.get("expires_in").getAsLong() * 1000);
             } catch (Exception e) {
                 logger.error(e);
             } finally {

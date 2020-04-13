@@ -18,7 +18,7 @@ import com.google.gson.JsonObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import ventures.blockbird.auth.FireBaseAuth;
+import ventures.blockbird.auth.FirebaseAuth;
 
 /**
  * blockbird.data audit SDK
@@ -27,12 +27,11 @@ import ventures.blockbird.auth.FireBaseAuth;
  *
  */
 public class BlockbirdAudit extends Thread {
-        private boolean sandbox;
         private String apiUrl;
         private String dbId;
 
         private final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11";
-        private FireBaseAuth firebaseAuth;
+        private FirebaseAuth firebaseAuth;
         private HashMultimap<String, String> piiTableColumns;
 
         final static Logger logger = LogManager.getLogger(BlockbirdAudit.class);
@@ -47,8 +46,7 @@ public class BlockbirdAudit extends Thread {
                 if (!sandbox) {
                         throw new Error("Production environment not available. Please use the sandbox environment.");
                 }
-                this.firebaseAuth = FireBaseAuth.getInstance();
-                this.sandbox = sandbox;
+                this.firebaseAuth = new FirebaseAuth(sandbox);
                 this.apiUrl = apiUrl;
         }
 

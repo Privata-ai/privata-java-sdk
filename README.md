@@ -26,6 +26,10 @@ Import to Maven using the following in your `pom.xml`:
     </dependencies>
 ```
 
+## Test
+
+For test purpose use the `firebaseApiKeyLocal` when instantiating `FirebaseAuth`.
+
 ## Usage
 
 To record a auditable transaction, you first instantiate the `BlockbirdAudit` Object using the URL of the API, the `dbKey` and `dbSecret` that you received during the On-Boarding process.

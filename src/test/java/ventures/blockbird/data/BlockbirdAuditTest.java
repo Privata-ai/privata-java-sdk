@@ -43,7 +43,6 @@ public class BlockbirdAuditTest {
     /**
      * Test constructor Error
      */
-
     @Test(expected = java.lang.Error.class)
     public void testConstructorError() {
         boolean exceptionThrown = false;
