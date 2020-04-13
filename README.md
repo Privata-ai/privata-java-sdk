@@ -34,21 +34,28 @@ You can instantiate the object like this:
 
 ```java
 // add Blockbird Audit
-bbAudit = BlockbirdAudit.getInstance("URL-of-API","dbKey","dbSecret");
+bbAudit = new BlockbirdAudit(boolean sandbox, String apiUrl);
+OR
+bbAudit = new BlockbirdAudit(boolean sandbox);
+OR
+bbAudit = new BlockbirdAudit(String apiUrl);
+OR
+bbAudit = new BlockbirdAudit();
 ```
-On instantion, the Tables and Columns that have been flagged as containing Personal Data during the On-boarding phase will be retrieved. 
 
-Then you add queries to your packet:
+Then initialize the app:
 
 ```java
-bbAudit.addQuery(clientUserId, clientRole, clientTable, clientRole, action("Create" | "Read" | "Update" | "Delete"), actionDate, rowsAffected);
-
+bbAudit.initialize(String dbId, String dbSecret);
 ```
 
-Queries are batched in order to reduce network traffic and only tables and columns that have been flagged as containing Personal Data are sent. If you wish to force sending the current batch of queries, you can run:
+Then you send queries to api:
 
 ```java
-bbAudit.run();
+bbAudit.sendQueries(JsonArray queries);
+
 ```
+
+When sending queries, the Tables and Columns that have been flagged as containing Personal Data during the On-boarding phase will be retrieved.
 
 > Note: Blockbird Data saves table and column names in `camelCase` format.
