@@ -31,7 +31,7 @@ public class BlockbirdAuditTest {
         boolean exceptionThrown = false;
         bbAudit = new BlockbirdAudit(true, util.getProps("testApiUrl"));
         try {
-            final int status = bbAudit.initialize(util.getProps("testDbId"), util.getProps("testDbSecret"));
+            final int status = bbAudit.initialize(util.getProps("testdbKey"), util.getProps("testDbSecret"));
             assertEquals(200, status);
         } catch (final Exception e) {
             exceptionThrown = true;

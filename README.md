@@ -50,7 +50,7 @@ bbAudit = new BlockbirdAudit();
 Then initialize the app:
 
 ```java
-bbAudit.initialize(String dbId, String dbSecret);
+bbAudit.initialize(String dbKey, String dbSecret);
 ```
 
 Then you send queries to api:

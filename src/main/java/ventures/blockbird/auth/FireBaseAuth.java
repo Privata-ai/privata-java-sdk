@@ -44,12 +44,12 @@ public class FirebaseAuth {
     /**
      * Authenticate using email and password on
      * 
-     * @param dbId
+     * @param dbKey
      * @param dbSecret
      * @return idToken
      * @throws Exception
      */
-    public void auth(String dbId, String dbSecret) throws Exception {
+    public void auth(String dbKey, String dbSecret) throws Exception {
         HttpURLConnection urlRequest = null;
         try {
             URL url = new URL(AUTH_BASE_URL + OPERATION_AUTH + "?key=" + this.firebaseKey);
@@ -58,7 +58,7 @@ public class FirebaseAuth {
             urlRequest.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
             OutputStream os = urlRequest.getOutputStream();
             OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
-            osw.write("{\"email\":\"" + dbId + "@blockbird.ventures" + "\",\"password\":\"" + dbSecret
+            osw.write("{\"email\":\"" + dbKey + "@blockbird.ventures" + "\",\"password\":\"" + dbSecret
                     + "\",\"returnSecureToken\":true}");
             osw.flush();
             osw.close();

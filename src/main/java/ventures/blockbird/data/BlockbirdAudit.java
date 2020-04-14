@@ -28,7 +28,7 @@ import ventures.blockbird.auth.FirebaseAuth;
  */
 public class BlockbirdAudit extends Thread {
         private String apiUrl;
-        private String dbId;
+        private String dbKey;
 
         private final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11";
         private FirebaseAuth firebaseAuth;
@@ -79,16 +79,16 @@ public class BlockbirdAudit extends Thread {
         /**
          * This is a class to handle the Blockbird Logs and send to the API
          * 
-         * @param dbId     the ID of the app on blockbird.data
+         * @param dbKey     the ID of the app on blockbird.data
          * @param dbSecret
          */
-        public int initialize(String dbId, String dbSecret) throws Exception {
+        public int initialize(String dbKey, String dbSecret) throws Exception {
                 try {
-                        this.firebaseAuth.auth(dbId, dbSecret);
-                        this.dbId = dbId;
+                        this.firebaseAuth.auth(dbKey, dbSecret);
+                        this.dbKey = dbKey;
                         return 200;
                 } catch (Exception e) {
-                        logger.error("Could not authenticate database " + dbId + " with error: " + e);
+                        logger.error("Could not authenticate database " + dbKey + " with error: " + e);
                         throw e;
                 }
         }
@@ -119,7 +119,7 @@ public class BlockbirdAudit extends Thread {
          */
         private int send(JsonArray auditQuery) throws Exception {
                 try {
-                        URL url = new URL(this.apiUrl + "/databases/" + this.dbId + "/queries");
+                        URL url = new URL(this.apiUrl + "/databases/" + this.dbKey + "/queries");
                         HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
                         String userIdToken = firebaseAuth.getIdToken();
@@ -172,7 +172,7 @@ public class BlockbirdAudit extends Thread {
          */
         private void getTablesWithPersonalData() {
                 try {
-                        URL url = new URL(this.apiUrl + "/databases/" + this.dbId);
+                        URL url = new URL(this.apiUrl + "/databases/" + this.dbKey);
                         HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
                         String userIdToken = firebaseAuth.getIdToken();
