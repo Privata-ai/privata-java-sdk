@@ -7,7 +7,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -17,21 +16,21 @@ import ventures.blockbird.util.PropsUtil;
 /**
  * Unit test for simple App.
  */
-public class BlockbirdAuditTest {
-    private static BlockbirdAudit bbAudit;
+public class PrivataAuditTest {
+    private static PrivataAudit privataAudit;
 
     /**
-     * Create the test case
+     * Create new privataAudit instance and initialize
      *
      * @param testName name of the test case
      */
     @BeforeClass
-    public static void initBlockbirdAudit() {
+    public static void initPrivataAudit() {
         final PropsUtil util = new PropsUtil("/project.properties");
         boolean exceptionThrown = false;
-        bbAudit = new BlockbirdAudit(true, util.getProps("testApiUrl"));
+        privataAudit = new PrivataAudit(true, util.getProps("testApiUrl"));
         try {
-            final int status = bbAudit.initialize(util.getProps("testdbKey"), util.getProps("testDbSecret"));
+            final int status = privataAudit.initialize(util.getProps("testdbKey"), util.getProps("testDbSecret"));
             assertEquals(200, status);
         } catch (final Exception e) {
             exceptionThrown = true;
@@ -47,7 +46,7 @@ public class BlockbirdAuditTest {
     public void testConstructorError() {
         boolean exceptionThrown = false;
         try {
-            new BlockbirdAudit(false);
+            new PrivataAudit(false);
         } catch (final Exception e) {
             exceptionThrown = true;
             assertEquals("Production environment not available. Please use the sandbox environment.", e.getMessage());
@@ -81,7 +80,7 @@ public class BlockbirdAuditTest {
 
         queries.add(query);
         try {
-            final int res = bbAudit.sendQueries(queries);
+            final int res = privataAudit.sendQueries(queries);
             assertEquals(res, 201);
         } catch (final Exception e) {
             exceptionThrown = true;
@@ -137,7 +136,7 @@ public class BlockbirdAuditTest {
         queries.add(firstQuery);
         queries.add(secondQuery);
         try {
-            final int res = bbAudit.sendQueries(queries);
+            final int res = privataAudit.sendQueries(queries);
             assertEquals(res, 201);
         } catch (final Exception e) {
             exceptionThrown = true;
@@ -161,7 +160,7 @@ public class BlockbirdAuditTest {
 
         queries.add(query);
         try {
-            final int res = bbAudit.sendQueries(queries);
+            final int res = privataAudit.sendQueries(queries);
             assertEquals(res, 201);
         } catch (final Exception e) {
             exceptionThrown = true;

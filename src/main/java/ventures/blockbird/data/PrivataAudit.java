@@ -26,7 +26,7 @@ import ventures.blockbird.auth.FirebaseAuth;
  * Sends query information from an application to the data-api
  *
  */
-public class BlockbirdAudit extends Thread {
+public class PrivataAudit extends Thread {
         private String apiUrl;
         private String dbKey;
 
@@ -34,7 +34,7 @@ public class BlockbirdAudit extends Thread {
         private FirebaseAuth firebaseAuth;
         private HashMultimap<String, String> piiTableColumns;
 
-        final static Logger logger = LogManager.getLogger(BlockbirdAudit.class);
+        final static Logger logger = LogManager.getLogger(PrivataAudit.class);
 
         /**
          * This is a class to handle the Blockbird Logs and send to the API
@@ -42,7 +42,7 @@ public class BlockbirdAudit extends Thread {
          * @param sandbox option to run in sandbox mode
          * @param apiUrl  the URL of the API
          */
-        protected BlockbirdAudit(boolean sandbox, String apiUrl) {
+        protected PrivataAudit(boolean sandbox, String apiUrl) {
                 if (!sandbox) {
                         throw new Error("Production environment not available. Please use the sandbox environment.");
                 }
@@ -54,7 +54,7 @@ public class BlockbirdAudit extends Thread {
          * This is a class to handle the Blockbird Logs and send to the API
          * 
          */
-        protected BlockbirdAudit() {
+        protected PrivataAudit() {
                 this(false, "https://api-staging.blockbird.ventures");
         }
 
@@ -63,7 +63,7 @@ public class BlockbirdAudit extends Thread {
          * 
          * @param sandbox option to run in sandbox mode
          */
-        protected BlockbirdAudit(boolean sandbox) {
+        protected PrivataAudit(boolean sandbox) {
                 this(sandbox, "https://api-staging.blockbird.ventures");
         }
 
@@ -72,7 +72,7 @@ public class BlockbirdAudit extends Thread {
          * 
          * @param apiUrl the URL of the API
          */
-        protected BlockbirdAudit(String apiUrl) {
+        protected PrivataAudit(String apiUrl) {
                 this(false, apiUrl);
         }
 
