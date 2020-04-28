@@ -12,19 +12,7 @@ You can store your `DbKey` and `DbSecret` as environmental variables in your jav
 
 ## Installation
 
-Import to Maven using the following in your `pom.xml`:
-
-```xml
-    <dependencies>
-      <!-- Privata.ai additions -->
-      <dependency>
-        <groupId>ai.privata</>
-        <artifactId>privata-ai-sdk</artifactId>
-        <version>0.3-SNAPSHOT</version>
-      </dependency>
-      ...
-    </dependencies>
-```
+Follow the instructions here: https://github.com/Privata-ai/privata-java-sdk/packages/156404
 
 ## Test
 
@@ -39,11 +27,11 @@ You can instantiate the object like this:
 ```java
 // add Privata Audit
 privataAudit = new PrivataAudit(boolean sandbox, String apiUrl);
-OR
+// OR
 privataAudit = new PrivataAudit(boolean sandbox);
-OR
+// OR
 privataAudit = new PrivataAudit(String apiUrl);
-OR
+// OR
 privataAudit = new PrivataAudit();
 ```
 
@@ -57,7 +45,6 @@ Then you send queries to api:
 
 ```java
 privataAudit.sendQueries(JsonArray queries);
-
 ```
 
 When sending queries, the Tables and Columns that have been flagged as containing Personal Data during the On-boarding phase will be retrieved.
