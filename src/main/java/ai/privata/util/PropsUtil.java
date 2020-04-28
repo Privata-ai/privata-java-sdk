@@ -1,4 +1,4 @@
-package ventures.blockbird.util;
+package ai.privata.util;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -15,44 +15,45 @@ import org.apache.logging.log4j.Logger;
  * Util
  */
 public class PropsUtil {
-	
+
 	final static Logger logger = LogManager.getLogger(PropsUtil.class);
 
 	private Properties props = null;
-	
+
 	/**
 	 * PropsUtil can read a properties file
-	 * @param propsName is the name of the file. It is located in the src/main/resources folder
+	 * 
+	 * @param propsName is the name of the file. It is located in the
+	 *                  src/main/resources folder
 	 * 
 	 **/
-    public PropsUtil(String propsName) {
+	public PropsUtil(String propsName) {
 		try {
 			InputStream propertyStream = getClass().getResourceAsStream(propsName);
 
 			if (propertyStream == null) {
-				throw new IOException("Could not find a blockbird properties file named " + propsName);
+				throw new IOException("Could not find a privata properties file named " + propsName);
 			}
-			
+
 			this.props = new Properties();
 			loadProperties(props, propertyStream);
 			propertyStream.close();
 			props.getProperty("firebaseApiKey");
+		} catch (Exception ex) {
+			logger.error("Got an error while attempting to load the runtime properties", ex);
 		}
-		catch (Exception ex) {
-			logger.error("Got an error while attempting to load the runtime properties", ex);			
-		}
-    }
-
-    public String getProps(String prop) {
-       return props.getProperty(prop);        
 	}
-	
+
+	public String getProps(String prop) {
+		return props.getProperty(prop);
+	}
+
 	/**
-	 * This method is a replacement for Properties.load(InputStream) so that we can load in utf-8
-	 * characters. Currently the load method expects the inputStream to point to a latin1 encoded
-	 * file. <br>
-	 * NOTE: In Java 6, you will be able to pass the load() and store() methods a UTF-8
-	 * Reader/Writer object as an argument, making this method unnecessary.
+	 * This method is a replacement for Properties.load(InputStream) so that we can
+	 * load in utf-8 characters. Currently the load method expects the inputStream
+	 * to point to a latin1 encoded file. <br>
+	 * NOTE: In Java 6, you will be able to pass the load() and store() methods a
+	 * UTF-8 Reader/Writer object as an argument, making this method unnecessary.
 	 * 
 	 * @param props the properties object to write into
 	 * @param input the input stream to read from
@@ -62,26 +63,21 @@ public class PropsUtil {
 		try {
 			reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
 			props.load(reader);
-		}
-		catch (FileNotFoundException fnfe) {
+		} catch (FileNotFoundException fnfe) {
 			logger.error("Unable to find properties file" + fnfe);
-		}
-		catch (UnsupportedEncodingException uee) {
+		} catch (UnsupportedEncodingException uee) {
 			logger.error("Unsupported encoding used in properties file" + uee);
-		}
-		catch (IOException ioe) {
+		} catch (IOException ioe) {
 			logger.error("Unable to read properties from properties file" + ioe);
-		}
-		finally {
+		} finally {
 			try {
 				if (reader != null) {
 					reader.close();
 				}
-			}
-			catch (IOException ioe) {
+			} catch (IOException ioe) {
 				logger.error("Unable to close properties file " + ioe);
 			}
 		}
 	}
-	
+
 }

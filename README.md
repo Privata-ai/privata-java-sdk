@@ -1,10 +1,10 @@
-# Java SDK for Blockbird.data API
+# Java SDK for Privata.ai API
 
-This SDK can be used in Java Applications to send audit data to the blockbird.data API
+This SDK can be used in Java Applications to send audit data to the privata.ai API
 
 # Registering your Application
 
-In order to register your application, you must create an account on [blockbird.ventures](https://blockbird.ventures/data/#). When your account has been created, you can register your Application and select the sensitive data within your Database.
+In order to register your application, you must create an account on [privata.ai](https://privata.ai). When your account has been created, you can register your Application and select the sensitive data within your Database.
 
 During this process, you will receive a **Database Key** and **Database Secret** which is used to authenticate and identify your Application and Database to our API.
 
@@ -12,43 +12,41 @@ You can store your `DbKey` and `DbSecret` as environmental variables in your jav
 
 ## Installation
 
-Import to Maven using the following in your `pom.xml`:
+Follow the instructions here: https://github.com/Privata-ai/privata-java-sdk/packages/156404
 
-```xml
-    <dependencies>
-      <!-- Blockbird data additions -->
-      <dependency>
-         <groupId>ventures.blockbird.data</groupId>
-         <artifactId>data-blockbird-sdk</artifactId>
-         <version>0.3-SNAPSHOT</version>
-      </dependency>
-      ...
-    </dependencies>
-```
+## Test
+
+For test purpose use the `firebaseApiKeyLocal` when instantiating `FirebaseAuth`.
 
 ## Usage
 
-To record a auditable transaction, you first instantiate the `BlockbirdAudit` Object using the URL of the API, the `dbKey` and `dbSecret` that you received during the On-Boarding process.
+To record a auditable transaction, you first instantiate the `PrivataAudit` Object using the URL of the API, the `dbKey` and `dbSecret` that you received during the On-Boarding process.
 
 You can instantiate the object like this:
 
 ```java
-// add Blockbird Audit
-bbAudit = BlockbirdAudit.getInstance("URL-of-API","dbKey","dbSecret");
+// add Privata Audit
+privataAudit = new PrivataAudit(boolean sandbox, String apiUrl);
+// OR
+privataAudit = new PrivataAudit(boolean sandbox);
+// OR
+privataAudit = new PrivataAudit(String apiUrl);
+// OR
+privataAudit = new PrivataAudit();
 ```
-On instantion, the Tables and Columns that have been flagged as containing Personal Data during the On-boarding phase will be retrieved. 
 
-Then you add queries to your packet:
+Then initialize the app:
 
 ```java
-bbAudit.addQuery(clientUserId, clientRole, clientTable, clientRole, action("Create" | "Read" | "Update" | "Delete"), actionDate, rowsAffected);
-
+privataAudit.initialize(String dbKey, String dbSecret);
 ```
 
-Queries are batched in order to reduce network traffic and only tables and columns that have been flagged as containing Personal Data are sent. If you wish to force sending the current batch of queries, you can run:
+Then you send queries to api:
 
 ```java
-bbAudit.run();
+privataAudit.sendQueries(JsonArray queries);
 ```
 
-> Note: Blockbird Data saves table and column names in `camelCase` format.
+When sending queries, the Tables and Columns that have been flagged as containing Personal Data during the On-boarding phase will be retrieved.
+
+> Note: Privata.ai saves table and column names in `camelCase` format.
