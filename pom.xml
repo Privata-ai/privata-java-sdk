@@ -5,7 +5,7 @@
   <artifactId>privata-ai-sdk</artifactId>
   <packaging>jar</packaging>
   <version>0.3-SNAPSHOT</version>
-  <name>ai-privata-sdk</name>
+  <name>privata-ai-sdk</name>
   <url>http://maven.apache.org</url>
 
   <properties>
@@ -65,8 +65,8 @@
   <distributionManagement>
     <repository>
       <id>github</id>
-      <name>Blockbird Data SDK</name>
-      <url>https://maven.pkg.github.com/blockbirdLabs/data-java-sdk</url>
+      <name>Privata.ai SDK</name>
+      <url>https://maven.pkg.github.com/Privata-ai/privata-java-sdk</url>
     </repository>
  </distributionManagement>
 </project>
