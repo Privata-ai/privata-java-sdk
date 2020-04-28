@@ -4,7 +4,7 @@ This SDK can be used in Java Applications to send audit data to the privata.ai A
 
 # Registering your Application
 
-In order to register your application, you must create an account on [privata.au](privataAudit). When your account has been created, you can register your Application and select the sensitive data within your Database.
+In order to register your application, you must create an account on [privata.ai](https://privata.ai). When your account has been created, you can register your Application and select the sensitive data within your Database.
 
 During this process, you will receive a **Database Key** and **Database Secret** which is used to authenticate and identify your Application and Database to our API.
 
