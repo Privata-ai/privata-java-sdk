@@ -63,7 +63,7 @@ public class PrivataAudit {
          * @param sandbox option to run in sandbox mode
          */
         public PrivataAudit(boolean sandbox) {
-                this(sandbox, "hhttps://api-sandbox.privata.ai");
+                this(sandbox, "https://api-sandbox.privata.ai");
         }
 
         /**
