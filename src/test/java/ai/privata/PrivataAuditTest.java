@@ -1,4 +1,4 @@
-package ventures.blockbird.data;
+package ai.privata;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -11,7 +11,7 @@ import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import ventures.blockbird.util.PropsUtil;
+import ai.privata.util.PropsUtil;
 
 /**
  * Unit test for simple App.

@@ -1,4 +1,4 @@
-package ventures.blockbird.data;
+package ai.privata;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,7 +8,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
 
-// TODO: Guava adds a large overhead to the package. 2.8MB and entire package is 3.2MB
 import com.google.common.collect.HashMultimap;
 import com.google.gson.JsonParser;
 import com.google.gson.Gson;
@@ -18,15 +17,15 @@ import com.google.gson.JsonObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import ventures.blockbird.auth.FirebaseAuth;
+import ai.privata.auth.FirebaseAuth;
 
 /**
- * blockbird.data audit SDK
+ * Privata.ai audit SDK
  * 
  * Sends query information from an application to the data-api
  *
  */
-public class PrivataAudit extends Thread {
+public class PrivataAudit {
         private String apiUrl;
         private String dbKey;
 
@@ -37,7 +36,7 @@ public class PrivataAudit extends Thread {
         final static Logger logger = LogManager.getLogger(PrivataAudit.class);
 
         /**
-         * This is a class to handle the Blockbird Logs and send to the API
+         * This is a class to handle the Privata.ai Logs and send to the API
          * 
          * @param sandbox option to run in sandbox mode
          * @param apiUrl  the URL of the API
@@ -51,24 +50,24 @@ public class PrivataAudit extends Thread {
         }
 
         /**
-         * This is a class to handle the Blockbird Logs and send to the API
+         * This is a class to handle the Privata.ai Logs and send to the API
          * 
          */
         protected PrivataAudit() {
-                this(false, "https://api-staging.blockbird.ventures");
+                this(false, "https://api-sandbox.privata.ai");
         }
 
         /**
-         * This is a class to handle the Blockbird Logs and send to the API
+         * This is a class to handle the Privata.ai Logs and send to the API
          * 
          * @param sandbox option to run in sandbox mode
          */
         protected PrivataAudit(boolean sandbox) {
-                this(sandbox, "https://api-staging.blockbird.ventures");
+                this(sandbox, "hhttps://api-sandbox.privata.ai");
         }
 
         /**
-         * This is a class to handle the Blockbird Logs and send to the API
+         * This is a class to handle the Privata.ai Logs and send to the API
          * 
          * @param apiUrl the URL of the API
          */
@@ -77,9 +76,9 @@ public class PrivataAudit extends Thread {
         }
 
         /**
-         * This is a class to handle the Blockbird Logs and send to the API
+         * This is a class to handle the Privata.ai Logs and send to the API
          * 
-         * @param dbKey     the ID of the app on blockbird.data
+         * @param dbKey     the ID of the app on Privata.ai
          * @param dbSecret
          */
         public int initialize(String dbKey, String dbSecret) throws Exception {
@@ -267,7 +266,7 @@ public class PrivataAudit extends Thread {
                                         JsonArray tables = query.get("tables").getAsJsonArray();
                                         for (int tableIndex = 0; tableIndex < tables.size(); tableIndex++) {
                                                 JsonObject table = tables.get(tableIndex).getAsJsonObject();
-                                                // Blockbird puts all Table and Column names in camelCase.
+                                                // Privata.ai puts all Table and Column names in camelCase.
                                                 // Therefore we add this code to ensure that we are checking correctly:
                                                 String tableName = Character
                                                                 .toLowerCase(table.get("table").getAsString().charAt(0))
@@ -280,7 +279,7 @@ public class PrivataAudit extends Thread {
                                                                         .getAsJsonArray();
                                                         for (int columnIndex = 0; columnIndex < queryColumnsNames
                                                                         .size(); columnIndex++) {
-                                                                // Blockbird puts all Table and Column names in
+                                                                // Privata.ai puts all Table and Column names in
                                                                 // camelCase.
                                                                 // Therefore we add this code to ensure that we are
                                                                 // checking correctly:

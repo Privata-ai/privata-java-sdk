@@ -1,4 +1,4 @@
-package ventures.blockbird.data;
+package ai.privata;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;

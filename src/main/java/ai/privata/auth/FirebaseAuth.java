@@ -1,4 +1,4 @@
-package ventures.blockbird.auth;
+package ai.privata.auth;
 
 import java.io.DataOutputStream;
 import java.io.InputStream;
@@ -17,7 +17,7 @@ import com.google.gson.JsonParser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import ventures.blockbird.util.PropsUtil;
+import ai.privata.util.PropsUtil;
 
 public class FirebaseAuth {
 

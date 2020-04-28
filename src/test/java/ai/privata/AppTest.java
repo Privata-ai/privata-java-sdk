@@ -1,4 +1,4 @@
-package ventures.blockbird.data;
+package ai.privata;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

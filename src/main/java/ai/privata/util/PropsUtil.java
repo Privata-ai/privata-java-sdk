@@ -1,4 +1,4 @@
-package ventures.blockbird.util;
+package ai.privata.util;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -32,7 +32,7 @@ public class PropsUtil {
 			InputStream propertyStream = getClass().getResourceAsStream(propsName);
 
 			if (propertyStream == null) {
-				throw new IOException("Could not find a blockbird properties file named " + propsName);
+				throw new IOException("Could not find a privata properties file named " + propsName);
 			}
 
 			this.props = new Properties();
