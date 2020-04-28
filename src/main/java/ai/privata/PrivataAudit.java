@@ -41,7 +41,7 @@ public class PrivataAudit {
          * @param sandbox option to run in sandbox mode
          * @param apiUrl  the URL of the API
          */
-        protected PrivataAudit(boolean sandbox, String apiUrl) {
+        public PrivataAudit(boolean sandbox, String apiUrl) {
                 if (!sandbox) {
                         throw new Error("Production environment not available. Please use the sandbox environment.");
                 }
@@ -53,7 +53,7 @@ public class PrivataAudit {
          * This is a class to handle the Privata.ai Logs and send to the API
          * 
          */
-        protected PrivataAudit() {
+        public PrivataAudit() {
                 this(false, "https://api-sandbox.privata.ai");
         }
 
@@ -62,7 +62,7 @@ public class PrivataAudit {
          * 
          * @param sandbox option to run in sandbox mode
          */
-        protected PrivataAudit(boolean sandbox) {
+        public PrivataAudit(boolean sandbox) {
                 this(sandbox, "hhttps://api-sandbox.privata.ai");
         }
 
@@ -71,7 +71,7 @@ public class PrivataAudit {
          * 
          * @param apiUrl the URL of the API
          */
-        protected PrivataAudit(String apiUrl) {
+        public PrivataAudit(String apiUrl) {
                 this(false, apiUrl);
         }
 
